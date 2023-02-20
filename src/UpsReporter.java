@@ -27,7 +27,10 @@ public class UpsReporter {
 		final String smtpServer = prop.getProperty("smtpServer");
 		
 				
-		/*String command = "ping www.codejava.net";
+		String command = "F:\\ups_echo_test.bat"; //upsc qnapups
+		
+		String emailText = "FFK USV meldet einen Stromausfall.\n\n"; 
+		boolean powerFailure = false;
 
 		try {
 			Process process = Runtime.getRuntime().exec(command);
@@ -36,17 +39,26 @@ public class UpsReporter {
 					process.getInputStream()));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				System.out.println(line);
+				if (line.contains("input.voltage:")) {
+					emailText += line + "\n";
+					float voltage = Float.parseFloat(line.replace("input.voltage:", "").trim());
+					if (voltage<200) {
+						powerFailure = true;
+					}
+				} else if (line.contains("battery.charge:")) {
+					emailText += line + "\n";
+				} 
 			}
 
 			reader.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
 
-		String emailText = "check check check";
-		_sendEmail(smtpServer, senderEmailId, senderPassword, "webmaster@feuerwehr-karlstetten.org", "USV Info", emailText);
+		if (powerFailure) {
+			_sendEmail(smtpServer, senderEmailId, senderPassword, "webmaster@feuerwehr-karlstetten.org", "FFK USV Info", emailText);
+		}
 	}
 
 	
@@ -70,7 +82,7 @@ public class UpsReporter {
 			message.setSubject(subject);
 			message.setText(text);
 			Transport.send(message);
-			System.out.println("Email send successfully.");
+			System.out.println("Email sent successfully.");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
