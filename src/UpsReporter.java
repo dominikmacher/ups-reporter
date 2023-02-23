@@ -25,9 +25,10 @@ public class UpsReporter {
 		final String senderEmailId = prop.getProperty("senderEmailId");
 		final String senderPassword = prop.getProperty("senderPassword");
 		final String smtpServer = prop.getProperty("smtpServer");
+		final String receiverEmail = prop.getProperty("receiverEmail");
 		
 				
-		String command = "F:\\ups_echo_test.bat"; //upsc qnapups
+		String command = "upsc qnapups";
 		
 		String emailText = "FFK USV meldet einen Stromausfall.\n\n"; 
 		boolean powerFailure = false;
@@ -49,6 +50,7 @@ public class UpsReporter {
 					emailText += line + "\n";
 				} 
 			}
+			System.out.println("successful");
 
 			reader.close();
 
@@ -57,7 +59,7 @@ public class UpsReporter {
 		}
 
 		if (powerFailure) {
-			_sendEmail(smtpServer, senderEmailId, senderPassword, "webmaster@feuerwehr-karlstetten.org", "FFK USV Info", emailText);
+			_sendEmail(smtpServer, senderEmailId, senderPassword, receiverEmail, "FFK USV Info", emailText);
 		}
 	}
 
